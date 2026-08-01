@@ -1,2 +1,1 @@
-# Radar
-Project
+# RadarAI
