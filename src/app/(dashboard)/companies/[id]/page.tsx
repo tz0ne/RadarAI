@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import CompanyIntelligenceCard from "@/features/companies/components/company-intelligence-card";
+import AnalyzeCompanyButton from "@/features/companies/components/analyze-company-button";
 
 type Props = {
   params: Promise<{
@@ -52,6 +53,8 @@ export default async function CompanyPage({ params }: Props) {
         </div>
 
       </div>
+
+      <AnalyzeCompanyButton companyId={company.id} />
 
       <CompanyIntelligenceCard
         leadScore={company.leadScore}
