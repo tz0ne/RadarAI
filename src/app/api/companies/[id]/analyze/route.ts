@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { collectWebsite } from "@/features/intelligence/collectors/website.collector";
+import { runIntelligence } from "@/features/intelligence/engine/intelligence.engine";
 
 export async function POST(
   request: Request,
@@ -18,14 +20,23 @@ export async function POST(
     );
   }
 
+  const collectedData = await collectWebsite({
+    name: company.name,
+    website: company.website,
+    industry: company.industry,
+    country: company.country,
+  });
+
+  const intelligence = await runIntelligence(collectedData);
+
   await prisma.company.update({
     where: { id },
     data: {
-      aiSummary:
-        `${company.name} is a promising company that matches the RadarAI demo analysis.`,
-      leadScore: 82,
-      growthScore: 75,
-      hiringScore: 68,
+      aiSummary: intelligence.summary,
+      leadScore: intelligence.leadScore,
+      growthScore: intelligence.growthScore,
+      hiringScore: intelligence.hiringScore,
+      buyingSignals: intelligence.buyingSignals,
       lastEnrichedAt: new Date(),
     },
   });
