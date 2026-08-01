@@ -2,9 +2,17 @@
 
 import CompanyTable from "@/features/companies/components/company-table";
 import { useCompanies } from "@/features/companies/hooks/use-companies";
+import { Input } from "@/components/ui/input";
+import { useCompanySearch } from "@/features/companies/hooks/use-company-search";
 
 export default function CompaniesPage() {
   const { data, isLoading, error } = useCompanies();
+
+  const {
+    search,
+    setSearch,
+    filtered,
+  } = useCompanySearch(data ?? []);
 
   if (isLoading) {
     return <div className="p-8">Loading companies...</div>;
@@ -30,7 +38,15 @@ export default function CompaniesPage() {
         </p>
       </div>
 
-      <CompanyTable companies={data ?? []} />
+      <div className="space-y-4">
+        <Input
+          placeholder="Search companies..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+
+        <CompanyTable companies={filtered} />
+      </div>
     </div>
   );
 }

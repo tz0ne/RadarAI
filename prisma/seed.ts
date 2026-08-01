@@ -1,18 +1,17 @@
-import { PrismaClient } from "../src/generated/prisma";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const workspace = await prisma.workspace.upsert({
-    where: {
-      id: "demo-workspace",
-    },
-    update: {},
-    create: {
-      id: "demo-workspace",
-      name: "RadarAI Demo Workspace",
-    },
-  });
+  let workspace = await prisma.workspace.findFirst();
+
+  if (!workspace) {
+    workspace = await prisma.workspace.create({
+      data: {
+        name: "RadarAI Demo",
+      },
+    });
+  }
 
   const companies = [
     {
@@ -23,18 +22,18 @@ async function main() {
       city: "Redmond",
     },
     {
-      name: "OpenAI",
-      website: "https://openai.com",
-      industry: "Artificial Intelligence",
-      country: "USA",
-      city: "San Francisco",
-    },
-    {
       name: "Google",
       website: "https://google.com",
       industry: "Software",
       country: "USA",
       city: "Mountain View",
+    },
+    {
+      name: "OpenAI",
+      website: "https://openai.com",
+      industry: "Artificial Intelligence",
+      country: "USA",
+      city: "San Francisco",
     },
     {
       name: "Amazon",
@@ -53,12 +52,20 @@ async function main() {
   ];
 
   for (const company of companies) {
-    await prisma.company.create({
-      data: {
-        ...company,
-        workspaceId: workspace.id,
+    const exists = await prisma.company.findFirst({
+      where: {
+        name: company.name,
       },
     });
+
+    if (!exists) {
+      await prisma.company.create({
+        data: {
+          ...company,
+          workspaceId: workspace.id,
+        },
+      });
+    }
   }
 
   console.log("✅ Seed completed");
