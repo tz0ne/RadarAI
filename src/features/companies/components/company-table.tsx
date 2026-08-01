@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export type Company = {
   id: string;
   name: string;
@@ -32,7 +34,12 @@ export default function CompanyTable({ companies }: Props) {
               className="border-b hover:bg-slate-50"
             >
               <td className="p-4 font-medium">
-                {company.name}
+                <Link
+                  href={`/companies/${company.id}`}
+                  className="font-semibold hover:underline"
+                >
+                  {company.name}
+                </Link>
               </td>
 
               <td className="p-4">

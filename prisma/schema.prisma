@@ -18,13 +18,28 @@ model Workspace {
 
 model Company {
   id          String   @id @default(cuid())
+
   name        String
   website     String?
+  linkedinUrl String?
+
   industry    String?
   country     String?
   city        String?
+
   employeeCnt Int?
-  linkedinUrl String?
+  revenue     String?
+  foundedYear Int?
+
+  // ---------- AI ----------
+  aiSummary      String? @db.Text
+  leadScore      Int      @default(0)
+  buyingSignals  Json?
+  techStack      Json?
+  growthScore    Int      @default(0)
+  hiringScore    Int      @default(0)
+
+  lastEnrichedAt DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
