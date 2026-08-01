@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import CompanyIntelligenceCard from "@/features/companies/components/company-intelligence-card";
 
 type Props = {
   params: Promise<{
@@ -52,14 +53,26 @@ export default async function CompanyPage({ params }: Props) {
 
       </div>
 
+      <CompanyIntelligenceCard
+        leadScore={company.leadScore}
+        growthScore={company.growthScore}
+        hiringScore={company.hiringScore}
+        updatedAt={
+          company.lastEnrichedAt
+            ? company.lastEnrichedAt.toLocaleDateString()
+            : null
+        }
+      />
+
       <div className="rounded-xl border bg-white p-6">
 
-        <h2 className="text-xl font-bold mb-3">
+        <h2 className="text-xl font-semibold mb-4">
           AI Summary
         </h2>
 
-        <p className="text-slate-500">
-          AI Summary will be generated in BUILD-011.
+        <p className="text-slate-600">
+          {company.aiSummary ??
+            "No AI analysis available yet."}
         </p>
 
       </div>
